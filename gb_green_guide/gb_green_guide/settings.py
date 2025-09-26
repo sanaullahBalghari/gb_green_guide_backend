@@ -39,14 +39,14 @@ ALLOWED_HOSTS = [
 
 CSRF_TRUSTED_ORIGINS = [
     "https://*.railway.app",
-    "https://gb-green-guide-frontend.vercel.app/",  # ✅ add this
+    "https://gb-green-guide-frontend-1csoaf8ih.vercel.app/",  # ✅ add this
 ]
 
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "https://gb-green-guide-frontend.vercel.app/",  # ✅ add your exact Vercel URL
+    "https://gb-green-guide-frontend-1csoaf8ih.vercel.app/",  # ✅ add your exact Vercel URL
 ]
 
 
