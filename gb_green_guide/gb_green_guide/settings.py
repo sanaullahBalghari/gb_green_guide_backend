@@ -34,20 +34,20 @@ ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
     ".railway.app",
-    ".vercel.app",   # ✅ add this for frontend
+    ".vercel.app",
 ]
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://*.railway.app",
-    "https://gb-green-guide-frontend-1csoaf8ih.vercel.app/",  # ✅ add this
-]
-
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "https://gb-green-guide-frontend-1csoaf8ih.vercel.app/",  # ✅ add your exact Vercel URL
+    "https://gb-green-guide-frontend-1csoaf8ih.vercel.app",
 ]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://gb-green-guide-frontend-1csoaf8ih.vercel.app",
+    "https://gbgreenguidebackend-production.up.railway.app",
+]
+
 
 
 # Application definition
@@ -114,14 +114,6 @@ CORS_ALLOW_CREDENTIALS = True
 # CORS_ALLOWED_ORIGINS = [
 #     "http://localhost:5173",  # React frontend port
 # ]
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
 
 
 TEMPLATES = [
@@ -150,8 +142,7 @@ JWT_AUTH_COOKIE_SAMESITE = "Lax"  # Usually "Lax" or "Strict" or "None"
 JWT_AUTH_COOKIE_SECURE = False  # False for dev (HTTP), True for production (HTTPS)
 JWT_AUTH_COOKIE_MAX_AGE = 3600  # 1 hour
 
-# Debug flag (usually already defined in your settings)
-DEBUG = True  # Change to False in production
+
 
 # Optional: change JWT_AUTH_COOKIE_SECURE based on DEBUG
 if DEBUG:
