@@ -31,13 +31,22 @@ SECRET_KEY = 'django-insecure-4oq4@l3lg_jt#@djq0r%%y#$f*)v=!wbs0ijji4$&m4wuxh%6z
 DEBUG = False  # production me ye False rakho
 
 ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '.railway.app',
+    "localhost",
+    "127.0.0.1",
+    ".railway.app",
+    ".vercel.app",   # ✅ add this for frontend
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://*.railway.app',
+    "https://*.railway.app",
+    "https://gb-green-guide-frontend.vercel.app/",  # ✅ add this
+]
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://gb-green-guide-frontend.vercel.app/",  # ✅ add your exact Vercel URL
 ]
 
 
@@ -85,6 +94,7 @@ REST_FRAMEWORK = {
 
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware", 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -92,7 +102,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'gb_green_guide.urls'
