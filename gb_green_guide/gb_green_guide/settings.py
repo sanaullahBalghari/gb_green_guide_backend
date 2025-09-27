@@ -24,30 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-4oq4@l3lg_jt#@djq0r%%y#$f*)v=!wbs0ijji4$&m4wuxh%6z'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
+DEBUG = True
 
-
-
-DEBUG = False  # production me ye False rakho
-
-ALLOWED_HOSTS = [
-    "localhost",
-    "127.0.0.1",
-    ".railway.app",
-    ".vercel.app",
-]
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "https://gb-green-guide-frontend-1csoaf8ih.vercel.app",
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://gb-green-guide-frontend-1csoaf8ih.vercel.app",
-    "https://gbgreenguidebackend-production.up.railway.app",
-]
-
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -94,15 +73,14 @@ REST_FRAMEWORK = {
 
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware", 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
 ]
 
 ROOT_URLCONF = 'gb_green_guide.urls'
@@ -111,10 +89,19 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 
 # CORS for React
 CORS_ALLOW_CREDENTIALS = True
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:5173",  # React frontend port
-# ]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
+]
 
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
+]
 
 TEMPLATES = [
     {
@@ -142,7 +129,8 @@ JWT_AUTH_COOKIE_SAMESITE = "Lax"  # Usually "Lax" or "Strict" or "None"
 JWT_AUTH_COOKIE_SECURE = False  # False for dev (HTTP), True for production (HTTPS)
 JWT_AUTH_COOKIE_MAX_AGE = 3600  # 1 hour
 
-
+# Debug flag (usually already defined in your settings)
+DEBUG = True  # Change to False in production
 
 # Optional: change JWT_AUTH_COOKIE_SECURE based on DEBUG
 if DEBUG:
