@@ -9,22 +9,61 @@ from django.db.models import Count
 
 class CityViewSet(viewsets.ModelViewSet):
     print('yes city is called')
-    # print(request.user)
-    # queryset = City.objects.all().order_by('-created_at')
-    queryset = City.objects.annotate( tourist_places_count=Count('tourist_places')).order_by('-created_at')
+    queryset = City.objects.annotate(tourist_places_count=Count('tourist_places')).order_by('-created_at')
     serializer_class = CitySerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     
-
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['region__name']
     search_fields = ['name']
+
+    def list(self, request, *args, **kwargs):
+        """
+        Override list method to handle 'fetch all cities' requests
+        """
+        # ✅ Check if frontend wants ALL cities (no pagination)
+        all_cities = request.query_params.get('all')
+        no_pagination = request.query_params.get('no_pagination')
+        limit = request.query_params.get('limit')
+        
+        if all_cities == 'true' or no_pagination == 'true' or limit == 'all':
+            # ✅ Return ALL cities without pagination
+            queryset = self.filter_queryset(self.get_queryset())
+            serializer = self.get_serializer(queryset, many=True)
+            
+            print(f"🏙️ Returning ALL cities: {queryset.count()}")
+            
+            return Response(serializer.data)
+        
+        # ✅ Default paginated response for other cases
+        return super().list(request, *args, **kwargs)
 
 class RegionViewSet(viewsets.ModelViewSet):
     print('yes called here')
     queryset = Region.objects.all()
     serializer_class = RegionSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+    
+    def list(self, request, *args, **kwargs):
+        """
+        Override list method to handle 'fetch all regions' requests
+        """
+        # ✅ Check if frontend wants ALL regions (no pagination)
+        all_regions = request.query_params.get('all')
+        no_pagination = request.query_params.get('no_pagination')
+        limit = request.query_params.get('limit')
+        
+        if all_regions == 'true' or no_pagination == 'true' or limit == 'all':
+            # ✅ Return ALL regions without pagination
+            queryset = self.filter_queryset(self.get_queryset())
+            serializer = self.get_serializer(queryset, many=True)
+            
+            print(f"🗺️ Returning ALL regions: {queryset.count()}")
+            
+            return Response(serializer.data)
+        
+        # ✅ Default paginated response for other cases
+        return super().list(request, *args, **kwargs)
 
 
 # evnts viewset 
