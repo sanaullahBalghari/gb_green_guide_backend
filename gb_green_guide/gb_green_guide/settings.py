@@ -18,8 +18,10 @@ load_dotenv(BASE_DIR / ".env")
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "unsafe-dev-key")
 DEBUG = os.getenv("DEBUG", "True") == "True"
 
-# ✅ Added .vercel.app domain for deployment
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", ".vercel.app,127.0.0.1,localhost").split(",")
+# ✅ Update: Allow dynamic Railway host for production
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+if not DEBUG:
+    ALLOWED_HOSTS += ["railway.app"]  # allow Railway domain automatically
 
 # Application definition
 INSTALLED_APPS = [
@@ -56,6 +58,8 @@ REST_FRAMEWORK = {
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # ✅ Add whitenoise for serving static files in production
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -68,23 +72,27 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'gb_green_guide.urls'
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
-# ✅ Updated for Vercel frontend
+# CORS for React (local + future deployed frontend)
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "http://localhost:5174",
     "http://127.0.0.1:5174",
-    "https://your-frontend-name.vercel.app",  # 👈 replace with your real frontend Vercel URL
 ]
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "http://localhost:5174",
-    "http://127.0.0.1:5174",
-    "https://your-frontend-name.vercel.app",  # 👈 replace with your real frontend Vercel URL
-]
+# ✅ Optional: Allow production Vercel URL dynamically
+vercel_url = os.getenv("FRONTEND_URL")
+if vercel_url:
+    CORS_ALLOWED_ORIGINS.append(vercel_url)
+    CSRF_TRUSTED_ORIGINS = [vercel_url]
+else:
+    CSRF_TRUSTED_ORIGINS = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:5174",
+        "http://127.0.0.1:5174",
+    ]
 
 TEMPLATES = [
     {
@@ -117,7 +125,7 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
 
-# ✅ Database: Supabase via .env
+# ✅ Database: Supabase (confirmed)
 DATABASES = {
     "default": dj_database_url.parse(
         os.getenv("DATABASE_URL"),
@@ -140,14 +148,14 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# ✅ Static files (for Vercel)
+# ✅ Static files setup for Railway
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_DIRS = []
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ✅ Email config (unchanged)
+# Email config
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
