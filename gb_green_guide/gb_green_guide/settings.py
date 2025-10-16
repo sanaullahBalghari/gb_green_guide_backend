@@ -55,11 +55,11 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     # ✅ Add whitenoise for serving static files in production
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -71,26 +71,24 @@ ROOT_URLCONF = 'gb_green_guide.urls'
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
 # CORS for React (local + future deployed frontend)
+# CORS for React (local + deployed frontend)
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "http://localhost:5174",
     "http://127.0.0.1:5174",
+    "https://gb-green-guide.vercel.app",  # ✅ add your live frontend
 ]
 
-# ✅ Optional: Allow production Vercel URL dynamically
-vercel_url = os.getenv("FRONTEND_URL")
-if vercel_url:
-    CORS_ALLOWED_ORIGINS.append(vercel_url)
-    CSRF_TRUSTED_ORIGINS = [vercel_url]
-else:
-    CSRF_TRUSTED_ORIGINS = [
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost:5174",
-        "http://127.0.0.1:5174",
-    ]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
+    "https://gb-green-guide.vercel.app",  # ✅ add here too
+]
+
 
 TEMPLATES = [
     {
