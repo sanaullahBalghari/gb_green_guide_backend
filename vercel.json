@@ -1,15 +1,15 @@
 {
+  "version": 2,
   "builds": [
     {
-      "src": "gb_green_guide/manage.py",
-      "use": "@vercel/python",
-      "config": { "maxLambdaSize": "50mb" }
+      "src": "gb_green_guide/wsgi.py",
+      "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "gb_green_guide/gb_green_guide/wsgi.py"
+      "dest": "gb_green_guide/wsgi.py"
     }
   ]
 }
