@@ -20,11 +20,7 @@ DEBUG = os.getenv("DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = ["*"]
 
-CLOUDINARY_STORAGE = {
-"CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME"),
-"API_KEY": os.getenv("CLOUDINARY_API_KEY"),
-"API_SECRET": os.getenv("CLOUDINARY_API_SECRET"),
-}
+
 # Application definition
 INSTALLED_APPS = [
     'jazzmin',
@@ -153,9 +149,17 @@ USE_TZ = True
 
 
 
+# ✅ Cloudinary media storage
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/media/'  # this is fine for local URL mapping
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # keep for local safety
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+}
+
 
 # ✅ Static files setup for Railway
 STATIC_URL = "static/"
