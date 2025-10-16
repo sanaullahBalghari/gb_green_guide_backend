@@ -20,7 +20,11 @@ DEBUG = os.getenv("DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = ["*"]
 
-
+CLOUDINARY_STORAGE = {
+"CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME"),
+"API_KEY": os.getenv("CLOUDINARY_API_KEY"),
+"API_SECRET": os.getenv("CLOUDINARY_API_SECRET"),
+}
 # Application definition
 INSTALLED_APPS = [
     'jazzmin',
@@ -34,6 +38,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_filters',
     "rest_framework_simplejwt",
+    "cloudinary",
+    "cloudinary_storage",
     "accounts",
     "core",
     "Business",
@@ -144,6 +150,13 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+
+
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 # ✅ Static files setup for Railway
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
@@ -160,13 +173,4 @@ EMAIL_HOST_USER = "softeng48@gmail.com"
 EMAIL_HOST_PASSWORD = "azoduunpuxqnourt"
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-# ✅ Media files
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
 
-# ✅ Serve media in production (temporary via Django)
-if DEBUG:
-    from django.conf import settings
-    from django.conf.urls.static import static
-else:
-    MEDIA_URL = '/media/'
