@@ -17,7 +17,9 @@ load_dotenv(BASE_DIR / ".env")
 # Security
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "unsafe-dev-key")
 DEBUG = os.getenv("DEBUG", "True") == "True"
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+
+# ✅ Added .vercel.app domain for deployment
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", ".vercel.app,127.0.0.1,localhost").split(",")
 
 # Application definition
 INSTALLED_APPS = [
@@ -66,13 +68,14 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'gb_green_guide.urls'
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
-# CORS for React
+# ✅ Updated for Vercel frontend
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "http://localhost:5174",
     "http://127.0.0.1:5174",
+    "https://your-frontend-name.vercel.app",  # 👈 replace with your real frontend Vercel URL
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -80,6 +83,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:5173",
     "http://localhost:5174",
     "http://127.0.0.1:5174",
+    "https://your-frontend-name.vercel.app",  # 👈 replace with your real frontend Vercel URL
 ]
 
 TEMPLATES = [
@@ -117,7 +121,7 @@ SIMPLE_JWT = {
 DATABASES = {
     "default": dj_database_url.parse(
         os.getenv("DATABASE_URL"),
-        conn_max_age=60,
+        conn_max_age=0,
     )
 }
 DATABASES["default"]["OPTIONS"] = {"sslmode": "require"}
@@ -136,13 +140,14 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files
+# ✅ Static files (for Vercel)
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = []
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Email config
+# ✅ Email config (unchanged)
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
