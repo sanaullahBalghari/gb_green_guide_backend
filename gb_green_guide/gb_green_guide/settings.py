@@ -151,8 +151,8 @@ USE_TZ = True
 
 # ✅ Cloudinary media storage
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-MEDIA_URL = '/media/'  # this is fine for local URL mapping
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # keep for local safety
+# MEDIA_URL = '/media/'  # this is fine for local URL mapping
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # keep for local safety
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
