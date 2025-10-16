@@ -159,3 +159,14 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "softeng48@gmail.com"
 EMAIL_HOST_PASSWORD = "azoduunpuxqnourt"
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# ✅ Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# ✅ Serve media in production (temporary via Django)
+if DEBUG:
+    from django.conf import settings
+    from django.conf.urls.static import static
+else:
+    MEDIA_URL = '/media/'
