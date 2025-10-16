@@ -1,14 +1,14 @@
 {
   "builds": [
     {
-      "src": "gb_green_guide/wsgi.py",
+      "src": "gb_green_guide/gb_green_guide/wsgi.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "gb_green_guide/wsgi.py"
+      "dest": "gb_green_guide/gb_green_guide/wsgi.py"
     }
   ]
 }
