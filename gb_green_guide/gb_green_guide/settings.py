@@ -138,7 +138,7 @@ SIMPLE_JWT = {
 DATABASES = {
     "default": dj_database_url.parse(
         os.getenv("DATABASE_URL"),
-        conn_max_age=0,
+        conn_max_age=600,
     )
 }
 DATABASES["default"]["OPTIONS"] = {"sslmode": "require"}
