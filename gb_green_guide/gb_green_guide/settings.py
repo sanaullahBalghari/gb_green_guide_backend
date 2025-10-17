@@ -20,6 +20,17 @@ DEBUG = os.getenv("DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = ["*"]
 
+# ✅ Cloudinary media storage (put AFTER INSTALLED_APPS)
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME"),
+    "API_KEY": os.getenv("CLOUDINARY_API_KEY"),
+    "API_SECRET": os.getenv("CLOUDINARY_API_SECRET"),
+}
+
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+# MEDIA_URL = "/media/"
+# MEDIA_ROOT = BASE_DIR / "media"
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -30,12 +41,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "cloudinary",
+    "cloudinary_storage",
     "rest_framework",
     'corsheaders',
     'django_filters',
     "rest_framework_simplejwt",
-    "cloudinary",
-    "cloudinary_storage",
     "accounts",
     "core",
     "Business",
@@ -149,16 +160,6 @@ USE_TZ = True
 
 
 
-# ✅ Cloudinary media storage
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-# MEDIA_URL = '/media/'  # this is fine for local URL mapping
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # keep for local safety
-
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
-}
 
 
 # ✅ Static files setup for Railway
