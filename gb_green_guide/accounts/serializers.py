@@ -1,5 +1,6 @@
 # accounts/serializers.py
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from ecommerce.models import Product  # 👈 import product model
@@ -19,8 +20,15 @@ class RegisterSerializer(serializers.ModelSerializer):
     def validate(self, data):
         if data.get('password') != data.get('confirm_password'):
             raise serializers.ValidationError({"confirm_password": "Password fields didn't match."})
+
+
+        try:
+            validate_password(data.get('password'))
+        except ValidationError as e:
+            # Convert Django ValidationError to DRF ValidationError with proper field
+            raise serializers.ValidationError({"password": list(e.messages)})
         # Optionally use Django password validators:
-        validate_password(data.get('password'))
+        # validate_password(data.get('password'))
         return data
 
     def create(self, validated_data):
