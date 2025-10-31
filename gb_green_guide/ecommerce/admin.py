@@ -18,6 +18,7 @@ class ProductCategoryAdmin(admin.ModelAdmin):
 
 # ===============================
 # ===============================
+# ===============================
 # ✅ Product Admin
 # ===============================
 @admin.register(Product)
