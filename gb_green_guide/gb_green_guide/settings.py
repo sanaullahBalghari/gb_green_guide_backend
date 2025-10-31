@@ -19,7 +19,7 @@ load_dotenv(BASE_DIR / ".env")
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "unsafe-dev-key")
 DEBUG = os.getenv("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 # ✅ Cloudinary media storage (put AFTER INSTALLED_APPS)
 CLOUDINARY_STORAGE = {
@@ -101,6 +101,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5174",
     "http://127.0.0.1:5174",
     "https://gb-green-guide.vercel.app",  # ✅ add your live frontend
+    "https://gbgreenguidebackend-production.up.railway.app",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -109,6 +110,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5174",
     "http://127.0.0.1:5174",
     "https://gb-green-guide.vercel.app",  # ✅ add here too
+    "https://gbgreenguidebackend-production.up.railway.app",
 ]
 
 
