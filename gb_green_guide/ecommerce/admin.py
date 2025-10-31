@@ -23,6 +23,7 @@ class ProductCategoryAdmin(admin.ModelAdmin):
 # ✅ Product Admin
 # ===============================
 # ===============================
+# ===============================
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = (
