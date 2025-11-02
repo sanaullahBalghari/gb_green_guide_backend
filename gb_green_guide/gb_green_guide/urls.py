@@ -15,6 +15,7 @@ urlpatterns = [
     path('api/', include('core.urls')), 
     path("business/", include("Business.urls")),
     path("ecommerce/", include("ecommerce.urls")),
+    path('chatbot/', include('chatbot.urls'))
 ]
 
 

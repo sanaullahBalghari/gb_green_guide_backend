@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "core",
     "Business",
     "ecommerce",
+    "chatbot",
 ]
 
 REST_FRAMEWORK = {
