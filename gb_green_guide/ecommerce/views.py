@@ -48,7 +48,6 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all().order_by("-created_at")
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-
     filter_backends = [
         filters.SearchFilter,
         DjangoFilterBackend,
@@ -58,7 +57,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     filterset_class = ProductFilter
     ordering_fields = ["created_at", "price", "discount_price"]
     ordering = ["-created_at"]
-
+    
     def get_permissions(self):
         if self.action == "create":
             return [IsBusinessOwner()]
@@ -67,10 +66,27 @@ class ProductViewSet(viewsets.ModelViewSet):
         if self.action == "my_products":
             return [IsAuthenticated()]
         return super().get_permissions()
-
+    
+    # ✅ NEW: Override pagination based on query params
+    def paginate_queryset(self, queryset):
+        """
+        Allow custom page_size from query params if provided.
+        This lets the frontend request more items for sliders/carousels.
+        """
+        if 'page_size' in self.request.query_params:
+            try:
+                page_size = int(self.request.query_params['page_size'])
+                # Set a reasonable maximum to prevent abuse
+                if 1 <= page_size <= 100:
+                    self.paginator.page_size = page_size
+            except (ValueError, TypeError):
+                pass  # Invalid page_size, use default
+        
+        return super().paginate_queryset(queryset)
+    
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
-
+    
     @action(detail=False, methods=["get"], url_path="my_products")
     def my_products(self, request):
         qs = self.get_queryset().filter(owner=request.user)
@@ -80,6 +96,44 @@ class ProductViewSet(viewsets.ModelViewSet):
             return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
+
+# # 🔹 Product CRUD
+# class ProductViewSet(viewsets.ModelViewSet):
+#     queryset = Product.objects.all().order_by("-created_at")
+#     serializer_class = ProductSerializer
+#     permission_classes = [IsAuthenticatedOrReadOnly]
+
+#     filter_backends = [
+#         filters.SearchFilter,
+#         DjangoFilterBackend,
+#         filters.OrderingFilter
+#     ]
+#     search_fields = ["name", "description", "category__name", "city__name"]
+#     filterset_class = ProductFilter
+#     ordering_fields = ["created_at", "price", "discount_price"]
+#     ordering = ["-created_at"]
+
+#     def get_permissions(self):
+#         if self.action == "create":
+#             return [IsBusinessOwner()]
+#         if self.action in ["update", "partial_update", "destroy"]:
+#             return [IsAuthenticated(), IsOwnerOrReadOnly()]
+#         if self.action == "my_products":
+#             return [IsAuthenticated()]
+#         return super().get_permissions()
+
+#     def perform_create(self, serializer):
+#         serializer.save(owner=self.request.user)
+
+#     @action(detail=False, methods=["get"], url_path="my_products")
+#     def my_products(self, request):
+#         qs = self.get_queryset().filter(owner=request.user)
+#         page = self.paginate_queryset(qs)
+#         if page is not None:
+#             serializer = self.get_serializer(page, many=True)
+#             return self.get_paginated_response(serializer.data)
+#         serializer = self.get_serializer(qs, many=True)
+#         return Response(serializer.data)
 
 
 # 🔹 Cart CRUD
