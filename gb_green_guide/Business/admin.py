@@ -32,7 +32,7 @@ class RestaurantAdminForm(forms.ModelForm):
 
 @admin.register(Restaurant)
 class RestaurantAdmin(admin.ModelAdmin):
-    form = RestaurantAdminForm   # <-- yeh line add ki hai
+    form = RestaurantAdminForm
 
     list_display = (
         "name",
@@ -41,6 +41,7 @@ class RestaurantAdmin(admin.ModelAdmin):
         "owner",
         "is_active",
         "room_available",
+        "average_room_rent",  # Add this line to show in list view
         "created_at",
     )
     list_filter = (
@@ -62,7 +63,7 @@ class RestaurantAdmin(admin.ModelAdmin):
             "fields": ("location_inside_city", "contacts_and_hours", "get_direction", "whatsapp_number"),
         }),
         ("Amenities & Availability", {
-            "fields": ("room_available", "amenities"),
+            "fields": ("room_available", "average_room_rent", "amenities"),  # Add average_room_rent here
         }),
         ("Status & Metadata", {
             "fields": ("is_active", "created_at", "updated_at"),

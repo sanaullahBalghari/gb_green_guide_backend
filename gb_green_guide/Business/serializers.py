@@ -17,6 +17,7 @@ class RestaurantSerializer(serializers.ModelSerializer):
             "is_active",
             "description",
             "room_available",
+            "average_room_rent", 
             "contacts_and_hours",
             "amenities",
             "get_direction",

@@ -30,6 +30,7 @@ class Restaurant(models.Model):
     is_active = models.BooleanField(default=True)
     description = models.TextField(blank=True, null=True)
     room_available = models.BooleanField(default=False)
+    average_room_rent = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True) 
 
     contacts_and_hours = models.JSONField(blank=True, null=True)
     amenities = models.JSONField(blank=True, null=True)
