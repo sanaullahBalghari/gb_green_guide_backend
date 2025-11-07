@@ -67,22 +67,52 @@ class ProductViewSet(viewsets.ModelViewSet):
             return [IsAuthenticated()]
         return super().get_permissions()
     
-    # ✅ NEW: Override pagination based on query params
+
     def paginate_queryset(self, queryset):
         """
-        Allow custom page_size from query params if provided.
-        This lets the frontend request more items for sliders/carousels.
+        Allow dynamic page_size from query params.
+        Works even if paginator was already initialized.
         """
-        if 'page_size' in self.request.query_params:
+        page_size = self.request.query_params.get('page_size')
+        if page_size:
             try:
-                page_size = int(self.request.query_params['page_size'])
-                # Set a reasonable maximum to prevent abuse
-                if 1 <= page_size <= 100:
-                    self.paginator.page_size = page_size
+                page_size = int(page_size)
+                print("✅ Page size received sana:", page_size)
+                if 1 <= page_size <= 1000:
+                    # ✅ Forcefully update the paginator’s page_size setting
+                    if hasattr(self, 'paginator') and self.paginator:
+                        self.paginator.page_size = page_size
+                    else:
+                        self.pagination_class.page_size = page_size
             except (ValueError, TypeError):
-                pass  # Invalid page_size, use default
-        
+                pass
+
         return super().paginate_queryset(queryset)
+
+
+
+
+
+
+    
+    
+    # ✅ NEW: Override pagination based on query params old one
+    # def paginate_queryset(self, queryset):
+    #     """
+    #     Allow custom page_size from query params if provided.
+    #     This lets the frontend request more items for sliders/carousels.
+    #     """
+    #     if 'page_size' in self.request.query_params:
+    #         try:
+    #             page_size = int(self.request.query_params['page_size'])
+    #             print("✅ Page size received sana:", page_size)
+    #             # Set a reasonable maximum to prevent abuse
+    #             if 1 <= page_size <= 1000:
+    #                 self.paginator.page_size = page_size
+    #         except (ValueError, TypeError):
+    #             pass  # Invalid page_size, use default
+        
+    #     return super().paginate_queryset(queryset)
     
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
