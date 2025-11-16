@@ -25,8 +25,9 @@ class CityViewSet(viewsets.ModelViewSet):
         all_cities = request.query_params.get('all')
         no_pagination = request.query_params.get('no_pagination')
         limit = request.query_params.get('limit')
+        page = request.query_params.get('page')
         
-        if all_cities == 'true' or no_pagination == 'true' or limit == 'all':
+        if all_cities == 'true' or no_pagination == 'true' or limit == 'all' or page is None:
             # ✅ Return ALL cities without pagination
             queryset = self.filter_queryset(self.get_queryset())
             serializer = self.get_serializer(queryset, many=True)
@@ -52,8 +53,9 @@ class RegionViewSet(viewsets.ModelViewSet):
         all_regions = request.query_params.get('all')
         no_pagination = request.query_params.get('no_pagination')
         limit = request.query_params.get('limit')
+        page = request.query_params.get('page')
         
-        if all_regions == 'true' or no_pagination == 'true' or limit == 'all':
+        if all_regions == 'true' or no_pagination == 'true' or limit == 'all' or page is None:
             # ✅ Return ALL regions without pagination
             queryset = self.filter_queryset(self.get_queryset())
             serializer = self.get_serializer(queryset, many=True)

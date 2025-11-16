@@ -7,4 +7,5 @@ router.register(r"restaurants", RestaurantViewSet, basename="restaurant")
 
 urlpatterns = [
     path("", include(router.urls)),
+    path("price/", include("Business.maxmin_urls")),  # <-- new endpoint
 ]

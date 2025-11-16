@@ -39,12 +39,28 @@ class RestaurantViewSet(viewsets.ModelViewSet):
     def my_restaurants(self, request):
         """
         Sirf current user ke restaurants (profile page ke liye).
-        Paginated response if pagination enabled.
+        Supports pagination bypass with ?all=true or ?no_pagination=true
         """
         qs = self.get_queryset().filter(owner=request.user)
+        
+        # ✅ Check if user wants all restaurants without pagination
+        all_restaurants = request.query_params.get('all')
+        no_pagination = request.query_params.get('no_pagination')
+        page_param = request.query_params.get('page')
+        
+        # ✅ Return all restaurants if requested or no page parameter
+        if all_restaurants == 'true' or no_pagination == 'true' or page_param is None:
+            serializer = self.get_serializer(qs, many=True)
+            print(f"🍽️ Returning ALL my restaurants: {qs.count()}")
+            return Response(serializer.data)
+        
+        # ✅ Otherwise use pagination
         page = self.paginate_queryset(qs)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
+        
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
+
+  
