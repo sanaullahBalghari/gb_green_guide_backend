@@ -42,7 +42,6 @@ class ProductCategoryViewSet(viewsets.ModelViewSet):
     serializer_class = ProductCategorySerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
-
 # 🔹 Product CRUD
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all().order_by("-created_at")
@@ -67,65 +66,79 @@ class ProductViewSet(viewsets.ModelViewSet):
             return [IsAuthenticated()]
         return super().get_permissions()
     
-
+    # ✅ NEW: Override list to handle n8n agents (return all products when no page param)
+    def list(self, request, *args, **kwargs):
+        """
+        Override list method to support n8n agents and custom pagination.
+        Returns all products when no 'page' parameter is provided (for n8n).
+        Uses pagination when 'page' is explicitly provided (for frontend).
+        """
+        page_param = request.query_params.get('page')
+        all_products = request.query_params.get('all')
+        no_pagination = request.query_params.get('no_pagination')
+        
+        # ✅ If no page parameter OR explicit all/no_pagination flag, return all products
+        if all_products == 'true' or no_pagination == 'true' or page_param is None:
+            queryset = self.filter_queryset(self.get_queryset())
+            serializer = self.get_serializer(queryset, many=True)
+            
+            print(f"🛒 Returning ALL products: {queryset.count()}")
+            
+            return Response(serializer.data)
+        
+        # ✅ Otherwise use default pagination (for frontend with page param)
+        return super().list(request, *args, **kwargs)
+      
+    # ✅ Override pagination based on query params
     def paginate_queryset(self, queryset):
         """
-        Allow dynamic page_size from query params.
-        Works even if paginator was already initialized.
+        Allow custom page_size from query params if provided.
+        This lets the frontend request more items for sliders/carousels.
         """
-        page_size = self.request.query_params.get('page_size')
-        if page_size:
+        if 'page_size' in self.request.query_params:
             try:
-                page_size = int(page_size)
+                page_size = int(self.request.query_params['page_size'])
                 print("✅ Page size received sana:", page_size)
+                # Set a reasonable maximum to prevent abuse
                 if 1 <= page_size <= 1000:
-                    # ✅ Forcefully update the paginator’s page_size setting
-                    if hasattr(self, 'paginator') and self.paginator:
-                        self.paginator.page_size = page_size
-                    else:
-                        self.pagination_class.page_size = page_size
+                    self.paginator.page_size = page_size
             except (ValueError, TypeError):
-                pass
-
-        return super().paginate_queryset(queryset)
-
-
-
-
-
-
-    
-    
-    # ✅ NEW: Override pagination based on query params old one
-    # def paginate_queryset(self, queryset):
-    #     """
-    #     Allow custom page_size from query params if provided.
-    #     This lets the frontend request more items for sliders/carousels.
-    #     """
-    #     if 'page_size' in self.request.query_params:
-    #         try:
-    #             page_size = int(self.request.query_params['page_size'])
-    #             print("✅ Page size received sana:", page_size)
-    #             # Set a reasonable maximum to prevent abuse
-    #             if 1 <= page_size <= 1000:
-    #                 self.paginator.page_size = page_size
-    #         except (ValueError, TypeError):
-    #             pass  # Invalid page_size, use default
+                pass  # Invalid page_size, use default
         
-    #     return super().paginate_queryset(queryset)
+        return super().paginate_queryset(queryset)
     
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
     
     @action(detail=False, methods=["get"], url_path="my_products")
     def my_products(self, request):
+        """
+        Get all products owned by the current user.
+        Supports pagination bypass with ?all=true or ?no_pagination=true
+        """
         qs = self.get_queryset().filter(owner=request.user)
+        
+        # ✅ Check if user wants all products without pagination
+        all_products = request.query_params.get('all')
+        no_pagination = request.query_params.get('no_pagination')
+        page_param = request.query_params.get('page')
+        
+        # ✅ Return all products if requested or no page parameter
+        if all_products == 'true' or no_pagination == 'true' or page_param is None:
+            serializer = self.get_serializer(qs, many=True)
+            print(f"🛒 Returning ALL my products: {qs.count()}")
+            return Response(serializer.data)
+        
+        # ✅ Otherwise use pagination
         page = self.paginate_queryset(qs)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
+        
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
+    
+    
 
 # # 🔹 Product CRUD
 # class ProductViewSet(viewsets.ModelViewSet):
