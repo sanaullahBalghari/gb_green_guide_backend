@@ -19,6 +19,8 @@ def chatbot_reply(request):
         
         # Step 2: Call AI agent
         ai_agent_url = "http://localhost:5678/webhook/ai"
+        # ai_agent_url = " http://localhost:5678/webhook-test/ai"
+       
         print(f"🔗 Calling AI agent at: {ai_agent_url}")
         
         payload = {
